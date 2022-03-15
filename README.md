@@ -13,6 +13,8 @@ was last modified on 13 November 2013 at 06:52:16 pm. Some edits were made
 to `kernel.c`, `idt.asm` and `irq.c` later on, the purpose of which are
 unclear now.
 
+For a full list of features see `extras/CHANGES.md`.
+
 Features in v0.1.0
 ------------------
 
