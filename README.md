@@ -20,3 +20,17 @@ Features in v0.1.0
   and backspace. Scrolls the screen when output reaches the last line.
 
 - Prints out PS/2 Mouse movement data (wrongly) as Keyboard presses.
+
+Building
+--------
+
+These tools are required for building the O.S.:
+
+- **Compiler**: GCC (`gcc`, `ar`, `ld` and `objcopy`) with i386 binary target.
+  - GCC on a GNU/Linux distro.
+  - MinGW on Windows.
+  - DJGPP on DOS (or 32bit Windows).
+
+- **Assembler**: NASM.
+
+Read `extras/BUILD.md` for more information.
