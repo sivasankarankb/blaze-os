@@ -3,7 +3,8 @@ clear
 
 # GNU/Linux GCC Build Script for Blaze OS v0.1.0
 
-CFLAGS="-c -nostdinc -nostdlib -ffreestanding -march=i386 -fleading-underscore"
+CFLAGS="-c -nostdinc -nostdlib -ffreestanding -march=i386 -fleading-underscore \
+-fno-pie -fno-stack-protector -m32"
 CFILES="kernel irq isr itext memmgr pic ports ps2"
 CFILECOUNT=$(echo "$CFILES" | wc -w)
 SRCCOUNT=$(($CFILECOUNT + 1))
@@ -32,7 +33,7 @@ for CSOURCE in ${CFILES}; do
 
 echo "4 of 6 Create kernel binary"
 
-ld obj/idt.o obj/libk.a -T linker.ld -o obj/ldkern.o
+ld -melf_i386 obj/idt.o obj/libk.a -T linker.ld -o obj/ldkern.o
 objcopy -R .note -R .comment -S -g -O binary obj/ldkern.o bin/kernel.bin
 
 echo "5 of 6 Create boot disk image"

@@ -7,8 +7,8 @@ These were removed from the old sources as they no longer require to be built.
 Those sources were kept only for historic reasons.
 
 These files were re-created. There were no build scripts for Linux distros
-back then. A simple translation to linux commands has been done.
-Copy the scripts to the outermost directory before running.
+back then. The included Linux script has been tested on very modern build
+tools. Copy the scripts to the outermost directory before running.
 
 
 v0.1.0
@@ -51,3 +51,20 @@ v0.1.0
   the definition from `ports.c` to `proto.h`. Place it below the `io_wait()`
   declaration there.
 
+- \[07\] (Fix included in Linux build script)
+
+  Modern x86-64 tools have to be instructed to produce 32bit code explicitly.
+  The `-m32` GCC flag and i386 ELF emulation in LD with `-melf_i386` seems
+  to do the trick as of now.
+
+- \[08\] (Fix included in Linux build script)
+
+  Modern Linux builds of GCC produce position independent executables (PIEs) by
+  default. The kernel is always loaded to a fixed address. PIE generation is
+  disabled with the `-fno-pie` switch.
+
+- \[09\] (Fix included in Linux build script)
+
+  A stack smash protector added by GCC requires handling from within the kernel.
+  This was never implemented in the original kernel code. This feature is
+  disabled with the `-fno-stack-protector` flag.
