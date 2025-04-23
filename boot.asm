@@ -37,7 +37,7 @@ begin:
 ;  and al, 0xFE
 ;  out 0x92, al
 
-after:
+;after:
 
 ; Reads a few sectors from floppy
 reset_drive:
@@ -46,13 +46,13 @@ reset_drive:
         or ah, ah               ; Check for error code
         jnz reset_drive         ; Try again if ah != 0
 
-        mov ax, 0               ; Offset of Destination address = 0000 
+        mov ax, 0h              ; Offset of Destination address = 0000 
         mov es, ax              ; Move offset to es
                                 ; The reset command uses es:bx
-        mov bx, 01000h          ; Destination address = 0000:1000
+        mov bx, 1000h           ; Destination address = 0000:1000
 
         mov ah, 02h             ; READ SECTOR-command
-        mov al, 012h            ; Number of sectors to read = 19
+        mov al, 016h            ; Number of sectors to read = 22
         mov ch, 00h             ; Cylinder = 0
         mov cl, 02h             ; Sector = 2 (starts from 1 not 0!)
         mov dh, 00h             ; Head = 0
@@ -154,14 +154,6 @@ mloop:
 ; Graphics setup 
 
 next:
-; Graphics Mode
-;mov ah,00h  ; Set Graphics Mode Function
-;mov al,13h  ; 256 K color Mode 13h
-;int 10h     ; Video interrupt
-
-;mov ax,4F02h
-;mov bx,102h ;103h
-;int 10h
 
 ;text mode
 mov ah,00h
@@ -227,7 +219,6 @@ gdt_end:                ; Used to calculate the size of the GDT
 gdt_desc:                       ; The GDT descriptor
         dw gdt_end - gdt - 1    ; Limit (size)
         dd gdt                  ; Address of the GDT
-
 
 ; Make the bootsector perfect
 

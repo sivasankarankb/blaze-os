@@ -78,7 +78,7 @@
   void kputf(unsigned char ch)
   {
     
-    if(tpointer>=80*25)
+    if(tpointer>=(80*25))
     {
       scroll();
     tpointer-=80;
@@ -179,4 +179,28 @@
       kputs("8. Mode 0x03 : Yes\n");
     else
       kputs("8. Mode 0x03 : No\n");
+  }
+  
+  void putnum(int num)
+  {
+    int len,j,k,num2;
+    unsigned char nums[]="0123456789";
+    
+    num2=num;
+    
+    for(len=0;num!=0;len++)
+    {
+      num=num/10;
+    }
+    
+    unsigned char *ttxt;
+    ttxt[len]='\0';
+    
+    for(j=0;j<=len;j++)
+    {
+      ttxt[len-j-1]=nums[num2%10];
+      num2=num2/10; 
+    }
+    
+    kputs(ttxt);    
   }

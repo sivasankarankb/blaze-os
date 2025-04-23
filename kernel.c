@@ -1,5 +1,4 @@
 // This file is the Inspiration C kernel
-// DO NOT MODYFY FOR BEST RESULTS
 
   # include "proto.h"      // Function prototypes libary
                            // Some strings used in the basic kernel :
@@ -21,6 +20,10 @@ Reporting:\n\n" ;
   char kbdsc1_LED_011[]= "\
 6. Keyboard Scan Code set to Set 1\n\
 7. Capslock and Numlock turned on\n";
+  char irqs_1[]="\
+8. Enabled IRQs Exceptions and All Interrupts\n";
+  char paging_1[]="\
+9. Enabled Paging\n";
   
   void kmain();            // Prototype for kmain()
   void enable_hardware();
@@ -61,6 +64,7 @@ Reporting:\n\n" ;
     unsigned char *gvidmem = (unsigned char *)0xA0000;  
     unsigned char *tvidmem = (unsigned char *)0xB8000;
 
+    clrscr();
     setbgfg(0x0E);
     setccol(0x0A);         // Set screen color attribute to Green on Black
     settptr(188);          // Change the text position pointer to position
@@ -85,6 +89,12 @@ Reporting:\n\n" ;
     kputs(kbdsc1_LED_011); // Print status message
     videomodetst();        // Test if We Are In Mode 0x03 : 80x25 text mode
     enable_hardware();     // Enable Interrupts and IRQs
+    kputs(irqs_1);         // Print status message
+    //setup_paging();        // Enable Paging
+    //kputs(paging_1);       // Print status message
+    kputs("9. Testing Number Printer : ");
+    putnum(1000);
+    kputf('\n');
     
     __asm__("int $46");
     
@@ -94,11 +104,9 @@ Reporting:\n\n" ;
     __asm__("mov $0x0510,%edx");
     __asm__("int $47");
     
-    __asm__("mov $1,%bh");
-    __asm__("mov $0x0510,%eax");
-    __asm__("mov $0x0B8000,%ecx");
-    __asm__("mov $2,%dx");
-    __asm__("int $47");
+    __asm__("mov $0,%ah\n\
+             mov $0x13,%al\n\
+             int $48");
     
     for(;;);               // Another infinite loop for extra safety
   }

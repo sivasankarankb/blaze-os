@@ -1,6 +1,10 @@
 [BITS 32]
 jmp 08h:start
+
+; Kernel Main
 extern _main
+
+; ISRs code in C
 extern _isr0
 extern _isr1
 extern _isr2
@@ -19,6 +23,8 @@ extern _isr14
 extern _isr15
 extern _isr16
 extern _isr17_31
+
+; IRQ Handlers Coded in C 
 extern _irq0
 extern _irq1
 extern _irq2
@@ -36,7 +42,8 @@ extern _irq13
 extern _irq14
 extern _irq15
 extern _int46
-extern _int47 
+extern _int47
+ 
 start:
 mov byte [ds:0x0b8002],'L'
 mov byte [ds:0x0b8003],0x0F
@@ -58,12 +65,15 @@ mov byte [ds:0x0b8014],'D'
 mov byte [ds:0x0b8015],0x0F
 mov byte [ds:0x0b8016],'T'
 mov byte [ds:0x0b8017],0x0F
+
 cli
 lidt [idt_pointer]
+
 mov byte [ds:0x0b801A],':'
 mov byte [ds:0x0b801B],0x0F
 mov byte [ds:0x0b801E],'1'
 mov byte [ds:0x0b801F],0x0A
+
 jmp 08h : _main
 jmp $ 
 
@@ -266,6 +276,12 @@ dw 0x00
   dw 0x08
   dw 0xEE00
   dw 0x00
+  
+; 48th interrupt - Video Int  
+  dw 0x40
+  dw 0x08
+  dw 0xEE00
+  dw 0x42
     
 end_of_idt:
 

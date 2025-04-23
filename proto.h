@@ -1,52 +1,67 @@
 // Inspiration function prototypes
-  void memsetskp(unsigned char *dest, unsigned char what, int count, int skpb);
-  void int46();
-  void videomodetst();
-  void irq1();
+
+// IRQ.H
   void irq0();
-  void isr17_31();
-  void isr_16();
-  void isr_15();
-  void isr_14();
-  void isr_13();
-  void isr_12();
-  void isr_11();
-  void isr_10();
-  void isr_9();
-  void isr_8();
-  void isr_7();
-  void isr_6();
-  void isr_5();
-  void isr_4();
-  void isr_3();
-  void isr_2();
-  void isr_1();
-  void isr_0();
-  void clrscr();
+  void irq1();
+
+// ISR.H
   void disable_ints();
   void enable_ints();
+  void int46();
+  void isr0();
+  void isr1();
+  void isr2();
+  void isr3();
+  void isr4();
+  void isr5();
+  void isr6();
+  void isr7();
+  void isr8();
+  void isr9();
+  void isr10();
+  void isr11();
+  void isr12();
+  void isr13();
+  void isr14();
+  void isr15();
+  void isr16();
+  void isr17_31();
+
+// ITEXT.H
+  void clrscr();
+  void kput(unsigned char ch);
+  void kputf(unsigned char ch);
+  void kputs(unsigned char *cha);
+  void prASM();
+  void putnum(int num);
+  void scroll();
+  void setbgfg(unsigned char col);
+  void setccol(unsigned char col);
+  void settptr(int tptr);
+  void videomodetst();
+
+// MEMMGR.H
+  void checka20();
+  void enablea20();
+  void memcopy(unsigned char *loc, unsigned char *dest, int count);
+  void memset(unsigned char *dest, unsigned char what, int count);
+  void setup_paging();
+
+// PIC.H  
+  void IRQ_clear_mask(unsigned char IRQline);
+  void remap_pics(int pic1, int pic2);
+
+// PORTS.H
+  unsigned char in(unsigned short _port);
+  static inline void io_wait( void );
+  void out(unsigned short _port, unsigned char _data);
+
+// POWER.H  
+  void reboot();
+
+// PS2.H
+  void enablemouse();
   void io_wait_ps2_r();  
   void io_wait_ps2_w();
   void setLEDs(int scrolllock,int numlock,int capslock);
   void set_scancode_1();
-  void IRQ_clear_mask(unsigned char IRQline);
-  void remap_pics(int pic1, int pic2);
-  void prASM();
-  void checka20();
-  void scroll();
-  void ani4ever();
-  static inline void io_wait( void );
-  void enablea20();
-  void memsetani(unsigned char *dest, unsigned char what, int count);
-  void memset(unsigned char *dest, unsigned char what, int count);
-  void memcopy(unsigned char *loc, unsigned char *dest, int count);
-  int obit(unsigned char ibyte, int bitnum);
-  void setccol(unsigned char col);
-  void kputs(unsigned char *cha);
-  void settptr(int tptr);
-  void setbgfg(unsigned char col);
-  void kput(unsigned char ch);
-  void kputf(unsigned char ch);
-  unsigned char in(unsigned short _port);
-  void out(unsigned short _port, unsigned char _data);
-  void enablemouse();

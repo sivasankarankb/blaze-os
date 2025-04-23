@@ -139,7 +139,7 @@
   
   void int46()
   {
-    kputs("\n\t\t\t      Inspiration v.1\n");    
+    kputs("\n\t\t\t    Inspiration v.1.1\n");    
   };
   
   void int47()

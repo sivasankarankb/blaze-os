@@ -1,3 +1,6 @@
+int scrl=0;
+int capl=0;
+int numl=0;
 // Inspiration PS/2 Functions Library
 
   void enablemouse()
@@ -29,20 +32,24 @@
   void setLEDs(int scrolllock,int numlock,int capslock)
   {
     unsigned char data_byte=0;
+    scrl=numl=capl=0;
    
     if(scrolllock==1)
     {
       data_byte=data_byte|1;
+      scrl=1;
     }
    
     if(numlock==1)
     {
       data_byte=data_byte|2;
+      numl=1;
     }
    
     if(capslock==1)
     {
       data_byte=data_byte|4;
+      capl=1;
     }
 
     io_wait_ps2_w();
