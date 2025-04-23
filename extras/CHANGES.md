@@ -1,3 +1,15 @@
+**Version 0.1.1**
+07/12/2013, 08:12:02 am
+
+- Switch characters output on Shift and CapsLock usage on keyboard.
+- Toggle CapsLock, NumLock, ScrollLock LEDs on keyboard when these keys are
+  pressed.
+- Hitting Escape reboots the system.
+
+- Added a number output function in the screen driver.
+- Unused and commented out code is present.
+
+
 **Version 0.1.0**
 13/11/2013, 06:52:16 pm
 
