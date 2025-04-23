@@ -35,7 +35,17 @@
   void checka20();
   void scroll();
   void ani4ever();
+  
   static inline void io_wait( void );
+  
+  static inline
+  void io_wait( void )
+  {
+    __asm__ __volatile__( "jmp 1f\n\t"
+                    "1:jmp 2f\n\t"
+                    "2:" );
+  }
+
   void enablea20();
   void memsetani(unsigned char *dest, unsigned char what, int count);
   void memset(unsigned char *dest, unsigned char what, int count);

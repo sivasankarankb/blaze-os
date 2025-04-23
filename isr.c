@@ -1,3 +1,4 @@
+#include "proto.h"
 // Inspiration ISR Library  
 
   void enable_ints()

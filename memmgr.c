@@ -1,3 +1,4 @@
+#include "proto.h"
 // Inspiration Memory functions Library  
 
   // Enables the A20 line

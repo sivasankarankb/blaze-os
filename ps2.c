@@ -1,3 +1,4 @@
+#include "proto.h"
 // Inspiration PS/2 Functions Library
 
   void enablemouse()

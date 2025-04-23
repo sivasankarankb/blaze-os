@@ -1,3 +1,4 @@
+#include "proto.h"
 // Inspiration IRQ Library
 
   void irq0()

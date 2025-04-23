@@ -1,3 +1,4 @@
+#include "proto.h"
 // Inspiration Textmode Library
 	
   // Updates the hardware cursor
