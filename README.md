@@ -3,6 +3,8 @@ Blaze O.S.
 
 A fast, hobby operating system for x86 PCs.
 
+![Version 0.1.0 running on QEMU](extras/blaze-0.1.0.png)
+
 This `README` file and the `extras` folder are not part of the original source
 code. They have been added for the convenience of the reader.
 
