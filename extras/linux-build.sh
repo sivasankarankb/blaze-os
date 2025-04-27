@@ -1,11 +1,11 @@
 #!/bin/bash
 clear
 
-# GNU/Linux GCC Build Script for Blaze OS v0.1.0
+# GNU/Linux GCC Build Script for Blaze OS v0.1.1
 
 CFLAGS="-c -nostdinc -nostdlib -ffreestanding -march=i386 -fleading-underscore \
 -fno-pie -fno-stack-protector -m32"
-CFILES="kernel irq isr itext memmgr pic ports ps2"
+CFILES="kernel irq isr itext memmgr pic ports ps2 power"
 CFILECOUNT=$(echo "$CFILES" | wc -w)
 SRCCOUNT=$(($CFILECOUNT + 1))
 
