@@ -56,6 +56,14 @@
   static inline void io_wait( void );
   void out(unsigned short _port, unsigned char _data);
 
+  static inline
+  void io_wait( void )
+  {
+    __asm__ __volatile__( "jmp 1f\n\t"
+                    "1:jmp 2f\n\t"
+                    "2:" );
+  }
+
 // POWER.H  
   void reboot();
 

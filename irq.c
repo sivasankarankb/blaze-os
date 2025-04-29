@@ -1,3 +1,4 @@
+#include "proto.h"
 // Inspiration IRQ Library
 
 int lshft=0;
@@ -7,6 +8,8 @@ int lalt=0;
 int rshft=0;
 int rctrl=0;
 int ralt=0;
+
+extern int scrl, capl, numl;
 
   void irq0()
   {

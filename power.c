@@ -1,3 +1,4 @@
+  #include "proto.h"
   void reboot()
   {
     __asm__ __volatile__(" .code16gcc\n\

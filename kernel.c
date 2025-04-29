@@ -49,7 +49,7 @@ Reporting:\n\n" ;
     enable_ints();         // Enable Interrupts
   }  
   
-  void main()              // Kernel entry point
+  void kern_entry()              // Kernel entry point
   {             
     clrscr();              // Clear the screen
     disable_ints();        // Disable interrupts    
@@ -104,9 +104,9 @@ Reporting:\n\n" ;
     __asm__("mov $0x0510,%edx");
     __asm__("int $47");
     
-    __asm__("mov $0,%ah\n\
-             mov $0x13,%al\n\
-             int $48");
+    // __asm__("mov $0,%ah\n\
+    //          mov $0x13,%al\n\
+    //          int $48");
     
     for(;;);               // Another infinite loop for extra safety
   }

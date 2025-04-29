@@ -1,3 +1,4 @@
+#include "proto.h"
 // Inspiration PIC functions Library
 
   /* remap the PIC controller interrupts to our vectors

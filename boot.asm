@@ -52,7 +52,7 @@ reset_drive:
         mov bx, 1000h           ; Destination address = 0000:1000
 
         mov ah, 02h             ; READ SECTOR-command
-        mov al, 016h            ; Number of sectors to read = 22
+        mov al, 29              ; Number of sectors to (originally 22)
         mov ch, 00h             ; Cylinder = 0
         mov cl, 02h             ; Sector = 2 (starts from 1 not 0!)
         mov dh, 00h             ; Head = 0

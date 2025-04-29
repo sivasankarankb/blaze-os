@@ -2,7 +2,7 @@
 jmp 08h:start
 
 ; Kernel Main
-extern _main
+extern _kern_entry
 
 ; ISRs code in C
 extern _isr0
@@ -74,7 +74,7 @@ mov byte [ds:0x0b801B],0x0F
 mov byte [ds:0x0b801E],'1'
 mov byte [ds:0x0b801F],0x0A
 
-jmp 08h : _main
+jmp 08h : _kern_entry
 jmp $ 
 
 start_of_idt:

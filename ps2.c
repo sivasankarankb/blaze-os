@@ -1,3 +1,4 @@
+#include "proto.h"
 int scrl=0;
 int capl=0;
 int numl=0;
