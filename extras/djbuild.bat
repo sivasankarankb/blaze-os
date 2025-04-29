@@ -1,4 +1,4 @@
-echo off
+@echo off
 cls
 
 rem DJGPP Build Script for Blaze OS v0.1.1

@@ -1,4 +1,4 @@
-echo off
+@echo off
 cls
 
 rem MinGW-w64 Build Script for Blaze OS v0.1.1
