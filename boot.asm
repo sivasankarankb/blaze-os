@@ -1,227 +1,239 @@
-;Inspiration Primary Bootloader
+;-Code section-----------------------------------------------------------------;
 
-[BITS 16]       ; We need 16-bit intructions for Real mode
-[ORG 0x7C00]    ; The BIOS loads the boot sector into memory location 0x7C00
+[BITS 16]    ; 16 bit instructions for real mode
+[ORG 0x7C00] ; The origin of this bootloader is 0x0000:0x07C0
 
+; Skip the FAT boot record ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~;
 
-jmp short begin
+jmp short start
 nop
-times 0x3B db 0
 
-; DOS Boot Record
+; A FAT12 BPB
+ BS_OEMName      db      'MSWIN4.1'
+ BPB_BytesPerSec dw      00200h
+ BPB_SecPerClus  db      001h
+ BPB_RsvdSecCnt  dw      00001h
+ BPB_NumFATs     db      002h
+ BPB_RootEntCnt  dw      000E0h
+ BPB_TotSec16    dw      00B40h
+ BPB_Media       db      0F0h
+ BPB_FATSz16     dw      00009h
+ BPB_SecPerTrk   dw      00012h
+ BPB_NumHeads    dw      00002h
+ BPB_HiddSec     dd      000000000h
+ BPB_TotSec32    dd      000000000h
+ BS_DrvNum       db      000h
+ BS_Reserved1    db      000h
+ BS_BootSig      db      029h
+ BS_VolID        dd      0DEADBABAh
+ BS_VolLab       db      'INSPIRATION'
+ BS_FilSysType   db      'FAT12   '
 
-;db "MSWIN4.1" ; OEM Identifier
-;dw 0x200      ; No. of Bytes Per Sector
-;db 0xFF       ; No. of sector per cluster
-;dw 0x11       ; No. of Reserved Sectors
-;db 0x01       ; No. of FATs on the Disc
-;dw 0x02       ; No. of Directory Entries
-;dw 0x27BF     ; No. of Logical Sectors on this Disc = 65535
-;db 0x00       ; Media Descriptor Byte
-;dw 0x00       ; No. of Sectors Per FAT
 
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~;
 
-; Start the bootloader
+; Boot sector entry point
+start:
 
-begin:
+  mov byte [ds:bootdrive],dl
 
-;jmp enableA20
+; Set the correct video mode, Clear the screen and put a string on it ;
 
-;enable a20 line
+    mov ah,0x00                 ; SET VIDEO MODE command
+    mov al,0x03                 ; 80x25 16-color TEXT mode
+    int 10h                     ; Call video interrupt
+  
+    mov  dl,0x0F                ; Character attribute of white on black
+    call clrscr                 ; Call custom clrscr(); function
+    mov si,msg                  ; Move the address of string into si
+    call printstring            ; Call custom printstring(); function
+    
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~;
 
-;enableA20:
-;  in al, 0x92
-;  test al, 2
-;  jnz after
-;  or al, 2
-;  and al, 0xFE
-;  out 0x92, al
+; Reset the Floppy Disk Drive ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~;
 
-;after:
-
-; Reads a few sectors from floppy
 reset_drive:
         mov ah, 0               ; RESET-command
         int 13h                 ; Call interrupt 13h
         or ah, ah               ; Check for error code
         jnz reset_drive         ; Try again if ah != 0
+        
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~;
 
+; Set Parameters and call int 13h to read a few sectors ~~~~~~~~~~~~~~; 
+
+        ; Load sectors from booted drive
+        mov byte dl,[ds:bootdrive]
         mov ax, 0h              ; Offset of Destination address = 0000 
         mov es, ax              ; Move offset to es
                                 ; The reset command uses es:bx
-        mov bx, 1000h           ; Destination address = 0000:1000
+        mov bx, 7E00h           ; Destination address = 0000:7E00
 
         mov ah, 02h             ; READ SECTOR-command
-        mov al, 016h            ; Number of sectors to read = 22
+        mov al, 1h             ; Number of sectors to read = 26
         mov ch, 00h             ; Cylinder = 0
         mov cl, 02h             ; Sector = 2 (starts from 1 not 0!)
         mov dh, 00h             ; Head = 0
         int 13h                 ; Call interrupt 13h
         or ah, ah               ; Check for error code
         jnz reset_drive         ; Try again if ah != 0
+
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~;
         
-; Print 'Press Enter' onto the screen
+; Put another string on the screen~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~;
 
-; First clear the screen
+    mov  si,msga                ; Store the address of another string
+    call printstring            ; Call printstring(); again
 
-mov ah,06h ; Scroll Up function
-mov al,00h ; Nothing or 0x00 in AL means clear the whole screen
-mov bh,0ah ; Character attribute 0x0A is green on black
-mov ch,00h ; Top left row
-mov cl,00h ; Top left column
-mov dh,25  ; Bottom right row 
-mov dl,80  ; Bottom right column
-int 10h    ; Call video interrupt
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~;
 
-; Then set cursor to position '0'
+; Switch to protected mode~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~;
 
-mov ah,02h ; Set hardware cursor function
-mov bh,00h ; Page no. = 0
-mov dh,00h ; Row or X
-mov dl,00h ; Column or Y
-int 10h    ; Call video interrupt
+ cli                    ; Disable interrupts
+ lgdt[gdt_ptr]          ; Load GDT 
+ mov eax,cr0            ; Get the contents of cr0
+ or al,1                ; OR the value with 1
+ mov cr0,eax            ; Update the value of cr0
+ jmp 08h:clear_pipe     ; Do a far jump to set cs
 
-; Make the cursor invisible
+[BITS 32]
+ clear_pipe:
+   mov ax,010h          ; Move data segment into ax
+   mov ds,ax            ; Move it into ds
+   mov ss,ax            ; Move it into ss
+   mov esp, 07000h      ; Set stack pointer to 0x7000
 
-mov ah,01h   ; Set textmode cursor shape function
-mov ch,0010b ; Cursor config. bits 7-5
-mov cl,0000b ; Cursor config. bits 0-4
-int 10h      ; Call video interrupt
+   jmp 08h:0x7E00       ; Call ASM Kernel Main
+
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~;
+
+; Go into an infinite loop ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~;
+
+jmp $                   ; A 'self-jump'
+
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~;
+
+; <--------------16-bit functions using BIOS interrupts--------------->
+
+; Function PrintString to print a NULL-terminated string ~~~~~~~~~~~~~;
  
-mov ah, 0Eh
-mov bh, 0Fh
-mov bl, 0
+printstring:
+  mov bh, 1Fh ; Character attribute
+  mov bl, 0   ; Page number
+  
+  chloop:     ; The Character printing loop
+  lodsb       ; Get a byte from si
+  
+  or al,al    ; If the byte is a null or 0 then break the loop
+  jz finish   ; and return
+  
+  mov ah, 0Eh ; Function 14 of int 10h :: Print Character  
+  int 10h     ; Call int 10h
+  
+  jmp chloop
+  
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~;
+  
+; Function ClrScr to clear the screen ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~;
 
-mov al,0x0A                     ; New Line Character - 11
-int 10h
+clrscr:
+  
+  mov ah,06h  ; Function 6 of int 10h :: Scroll Up Window 
+  mov al,00h  ; No. of lines to Scroll :: Zero means all the lines
+  mov bh,dl   ; Character attribute for all characters
+  mov ch,00h  ; Top left row
+  mov cl,00h  ; Top left column
+  mov dh,25   ; Bottom right row 
+  mov dl,80   ; Bottom right column
+  int 10h     ; Call int 10h
+              
+  mov ah,02h  ; Funtion 2 of int 10h :: Set cutsor position
+  mov bh,00h  ; Page number
+  mov dh,00h  ; Row no.
+  mov dl,00h  ; Column no.
+  int 10h     ; Call int 10h
+  
+  jmp finish
+  
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~; 
+  
+; Function Return to return to the executing code~~~~~~~~~~~~~~~~~~~~~;
 
-mov al,0x0D                     ; Carriage Return Character - 13
-int 10h
+finish:
+  ret
+  
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~;
 
-mov al,' '                      ; <space> character
-times 34 int 10h
+; <------------------------------------------------------------------->
+  
+jmp $
 
-mov al,'P'
-int 10h
+;-Data Section-----------------------------------------------------------------;
 
-mov al,'r'
-int 10h
+; GDT entries - Self explanatory ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~;
 
-mov al,'e'
-int 10h
-
-mov al,'s'
-int 10h
-
-mov al,'s'
-int 10h
-
-mov al,' '
-int 10h
-
-mov al,'E'
-int 10h
-
-mov al,'n'
-int 10h
-
-mov al,'t'
-int 10h
-
-mov al,'e'
-int 10h
-
-mov al,'r'
-int 10h
-
-mov al,' '
-int 10h
-
-; wait until enter is pressed
-
-mloop:
-   mov ah, 0
-   int 0x16   ; wait for keypress
+; NULL secgment
+gdt_start:
+ gdt_null         dq 0
  
-   cmp al, 0x08    ; backspace pressed?
-   je mloop   ; back to square one
+; Kernel Mode Code Segment 
+ code_limit_low   dw 0FFFFh
+ code_baselow     dw 0
+ code_base_middle db 0
+ code_access      db 10011010b
+ code_granularity db 11001111b
+ code_base_high   db 0
  
-   cmp al, 0x0D  ; enter pressed?
-   je next      ; yes, we're done
-   
-   jmp mloop  ; keep looping util Enter is Pressed
-   
-; Graphics setup 
+; Kernel Mode Data Segment 
+ data_limit_low   dw 0FFFFh
+ data_baselow     dw 0
+ data_base_middle db 0
+ data_access      db 10010010b
+ data_granularity db 11001111b
+ data_base_high   db 0
 
-next:
+; User Mode Code Segment 
+ u_code_limit_low   dw 0FFFFh
+ u_code_baselow     dw 0
+ u_code_base_middle db 0
+ u_code_access      db 11111010b
+ u_code_granularity db 11001111b
+ u_code_base_high   db 0
+ 
+; User Mode Data Segment
+ u_data_limit_low   dw 0FFFFh
+ u_data_baselow     dw 0
+ u_data_base_middle db 00000000b
+ u_data_access      db 11110010b
+ u_data_granularity db 11001111b
+ u_data_base_high   db 0 
+gdt_end:
 
-;text mode
-mov ah,00h
-mov al,03h
-int 10h
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~;
 
+; GDT pointer to load into GDTR - Self Explanatory ~~~~~~~~~~~~~~~~~~~;
 
-; Start the Procedure to go to 32-bit mode - setup GDT and Stack
+gdt_ptr:
+ limit dw gdt_end - gdt_start - 1
+ base  dd gdt_start
+ 
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~;
+ 
+; Strings to print ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~;
 
-        cli                     ; Disable interrupts, we want to be alone
+msg db 13, 10, 13, 10, '  [ Reading Kernel File ]', 13, 10, 0
+msga db 13, 10, 13, 10, '  [ Booting Kernel ]', 13, 10, 13, 10, 0
 
-        xor ax, ax
-        mov ds, ax              ; Set DS-register to 0 - used by lgdt
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~;
 
-        lgdt [gdt_desc]         ; Load the GDT descriptor
+ bootdrive db 0
 
-        mov eax, cr0            ; Copy the contents of CR0 into EAX
-        or eax, 1               ; Set bit 0
-        mov cr0, eax            ; Copy the contents of EAX into CR0
-        jmp 08h:clear_pipe      ; Jump to code segment, offset clear_pipe
+; Pad the file with Zeroes
+times 510-($-$$) db 0
 
-[BITS 32]                       ; We now need 32-bit instructions
+; 'Bootable' Signature
+dw 0xAA55
 
-clear_pipe:
-        mov ax, 10h             ; Save data segment identifyer
-        mov ds, ax              ; Move a valid data segment into the data segment register
-        mov ss, ax              ; Move a valid data segment into the stack segment register
-        mov esp, 090000h        ; Move the stack pointer to 090000h
+;times 512*18 db 0
 
-; Let the 32bit kernel code take control of the PC
-
-jmp 08h : 01000h                ; Go to C code
-jmp $                           ; A loop for extra safety
-
-; The data for the GDT                                
-
-gdt:                    ; Address for the GDT
-
-gdt_null:               ; Null Segment
-        dd 0
-        dd 0
-
-gdt_code:               ; Code segment, read/execute, nonconforming
-        dw 0FFFFh
-        dw 0
-        db 0
-        db 10011010b    ;10011010b
-        db 11001111b
-        db 0
-
-gdt_data:               ; Data segment, read/write, expand down
-        dw 0FFFFh
-        dw 0
-        db 0
-        db 10010010b
-        db 11001111b
-        db 0
-
-gdt_end:                ; Used to calculate the size of the GDT
-
-
-
-gdt_desc:                       ; The GDT descriptor
-        dw gdt_end - gdt - 1    ; Limit (size)
-        dd gdt                  ; Address of the GDT
-
-; Make the bootsector perfect
-
-times 510-($-$$) db 0           ; Fill up the file with zeros
-
-        dw 0AA55h               ; Boot sector identifyer                    
+;times 224*32 db 0
