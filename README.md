@@ -10,7 +10,7 @@ code. They have been added for the convenience of the reader.
 
 **NOTE**: This version of the O.S. is kept for historical reasons only.
 
-Verson 0.1.0 was last modified on 07 December 2013 at 08:12:02 am.
+Version 0.1.1 was last modified on 07 December 2013 at 08:12:02 am.
 
 The kernel has been renamed multiple times. Once it was 'Inspiration' as in
 the comments. For a full list of features see `extras/CHANGES.md`.
