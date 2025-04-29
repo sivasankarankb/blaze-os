@@ -38,6 +38,9 @@ These tools are required for building the O.S.:
 
 Read `extras/BUILD.md` for more information.
 
+See the `vX.Y.Z-buildable` tags for a buildable set of source files.
+The `master` branch features the original sources that shouldn't compile.
+
 Running on a Virtual Machine
 ----------------------------
 
