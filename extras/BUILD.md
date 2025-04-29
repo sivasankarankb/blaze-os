@@ -11,11 +11,13 @@ back then. The included Linux script has been tested on very modern build
 tools. Copy the scripts to the outermost directory before running.
 
 
-v0.1.0
-------
+Fixes required to OS v0.1.1 sources
+-----------------------------------
+
+To compile the sources on todays tools, a bunch of changes are required.
 
 - \[01\] In `boot.asm` the number of floppy sectors to load is hard-coded
-  as 19. The latest DJGPP image (as of 10 March 2022) requires 29 sectors.
+  as 22. The latest DJGPP image (as of 29 April 2025) requires 29 sectors.
   Find the number of sectors by dividing the size of the kernel image by 512
   and rounding up. Edit the number in `boot.asm` and reassemble it.
 
@@ -68,3 +70,13 @@ v0.1.0
   A stack smash protector added by GCC requires handling from within the kernel.
   This was never implemented in the original kernel code. This feature is
   disabled with the `-fno-stack-protector` flag.
+
+- \[10\] The integers `scrl`, `capl` and `numl` are defined in `ps2.c` and
+  referenced in `irq.c`. Add `extern int scrl, capl, numl;` to the top of
+  `irq.c` to let the compiler find them.
+
+- \[11\] Comment out the `setup_paging()` function in `memmgr.c` which does not
+  explicitly cast a pointer. Since this func is unused, this will be enough.
+
+- \[12\] Remove the last `__asm__` statement in `kernel.c`. That interrupt call
+  will hang.
