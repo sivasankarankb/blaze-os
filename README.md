@@ -10,21 +10,19 @@ code. They have been added for the convenience of the reader.
 
 **NOTE**: This version of the O.S. is kept for historical reasons only.
 
-Development began in late September or early October of 2013. Verson 0.1.0
-was last modified on 13 November 2013 at 06:52:16 pm. Some edits were made
-to `kernel.c`, `idt.asm` and `irq.c` later on, the purpose of which are
-unclear now.
+Verson 0.1.0 was last modified on 07 December 2013 at 08:12:02 am.
 
 The kernel has been renamed multiple times. Once it was 'Inspiration' as in
 the comments. For a full list of features see `extras/CHANGES.md`.
 
-Features in v0.1.0
+Features in v0.1.1
 ------------------
 
-- Prints out what is typed on PS/2 Keyboard. Handles newline, space, tab
-  and backspace. Scrolls the screen when output reaches the last line.
-
-- Prints out PS/2 Mouse movement data (wrongly) as Keyboard presses.
+- Switch characters output on Shift and CapsLock usage on keyboard.
+- Toggle CapsLock, NumLock, ScrollLock LEDs on keyboard when these keys are
+  pressed.
+- Hitting Escape reboots the system.
+- Added a number output function in the screen driver.
 
 Building
 --------
