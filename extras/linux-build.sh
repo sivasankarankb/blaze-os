@@ -1,5 +1,4 @@
 #!/bin/bash
-clear
 
 # GNU/Linux GCC Build Script for Blaze OS v0.1.1
 
