@@ -16,23 +16,23 @@ echo   1 of %CFILECOUNT% idt.asm
 nasm -f elf -o obj\idt.o idt.asm
 
 echo   2 of %CFILECOUNT% kernel.c
-gcc -c -nostdinc -nostdlib -ffreestanding -march=i386 -fleading-underscore -o obj\kernel.o kernel.c
+gcc -c -m32 -nostdinc -nostdlib -ffreestanding -march=i386 -fleading-underscore -o obj\kernel.o kernel.c
 echo   3 of %CFILECOUNT% irq.c
-gcc -c -nostdinc -nostdlib -ffreestanding -march=i386 -fleading-underscore -o obj\irq.o irq.c
+gcc -c -m32 -nostdinc -nostdlib -ffreestanding -march=i386 -fleading-underscore -o obj\irq.o irq.c
 echo   4 of %CFILECOUNT% isr.c
-gcc -c -nostdinc -nostdlib -ffreestanding -march=i386 -fleading-underscore -o obj\isr.o isr.c
+gcc -c -m32 -nostdinc -nostdlib -ffreestanding -march=i386 -fleading-underscore -o obj\isr.o isr.c
 echo   5 of %CFILECOUNT% itext.c
-gcc -c -nostdinc -nostdlib -ffreestanding -march=i386 -fleading-underscore -o obj\itext.o itext.c
+gcc -c -m32 -nostdinc -nostdlib -ffreestanding -march=i386 -fleading-underscore -o obj\itext.o itext.c
 echo   6 of %CFILECOUNT% memmgr.c
-gcc -c -nostdinc -nostdlib -ffreestanding -march=i386 -fleading-underscore -o obj\memmgr.o memmgr.c
+gcc -c -m32 -nostdinc -nostdlib -ffreestanding -march=i386 -fleading-underscore -o obj\memmgr.o memmgr.c
 echo   7 of %CFILECOUNT% pic.c
-gcc -c -nostdinc -nostdlib -ffreestanding -march=i386 -fleading-underscore -o obj\pic.o pic.c
+gcc -c -m32 -nostdinc -nostdlib -ffreestanding -march=i386 -fleading-underscore -o obj\pic.o pic.c
 echo   8 of %CFILECOUNT% ports.c
-gcc -c -nostdinc -nostdlib -ffreestanding -march=i386 -fleading-underscore -o obj\ports.o ports.c
+gcc -c -m32 -nostdinc -nostdlib -ffreestanding -march=i386 -fleading-underscore -o obj\ports.o ports.c
 echo   9 of %CFILECOUNT% ps2.c
-gcc -c -nostdinc -nostdlib -ffreestanding -march=i386 -fleading-underscore -o obj\ps2.o ps2.c
+gcc -c -m32 -nostdinc -nostdlib -ffreestanding -march=i386 -fleading-underscore -o obj\ps2.o ps2.c
 echo   10 of %CFILECOUNT% power.c
-gcc -c -nostdinc -nostdlib -ffreestanding -march=i386 -fleading-underscore -o obj\power.o power.c
+gcc -c -m32 -nostdinc -nostdlib -ffreestanding -march=i386 -fleading-underscore -o obj\power.o power.c
 
 echo 3 of 6 Create library file
 
