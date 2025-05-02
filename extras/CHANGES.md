@@ -1,6 +1,6 @@
 # Changelog
 
-**Version 0.2.1**  
+## Version 0.2.1
 05/06/2014, 02:46:50 pm
 
 - Bootloader no longer waits for Enter press to boot the O.S.
@@ -23,7 +23,7 @@
 - Single header file split into many (module-wise).
 
 
-**Version 0.1.1**  
+## Version 0.1.1
 07/12/2013, 08:12:02 am
 
 - Switch characters output on Shift and CapsLock usage on keyboard.
@@ -36,7 +36,7 @@
 - Mouse data is no longer printed out as keyboard presses.
 
 
-**Version 0.1.0**  
+## Version 0.1.0
 13/11/2013, 06:52:16 pm
 
 - It's a 32bit O.S.
