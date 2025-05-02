@@ -3,26 +3,26 @@ Blaze O.S.
 
 A fast, hobby operating system for x86 PCs.
 
-![Version 0.1.1 running on QEMU](extras/blaze-0.1.1.png)
+![Version 0.2.1 running on QEMU. Command-line commands run.](extras/blaze-0.2.1.png)
 
 This `README` file and the `extras` folder are not part of the original source
 code. They have been added for the convenience of the reader.
 
 **NOTE**: This version of the O.S. is kept for historical reasons only.
 
-Version 0.1.1 was last modified on 07 December 2013 at 08:12:02 am.
+Version 0.2.1 was last modified on 05 June 2014 at 02:46:50 pm.
 
 The kernel has been renamed multiple times. Once it was 'Inspiration' as in
 the comments. For a full list of features see `extras/CHANGES.md`.
 
-Features in v0.1.1
-------------------
+New in v0.2.1
+-------------
 
-- Switch characters output on Shift and CapsLock usage on keyboard.
-- Toggle CapsLock, NumLock, ScrollLock LEDs on keyboard when these keys are
-  pressed.
-- Hitting Escape reboots the system.
-- Added a number output function in the screen driver.
+- Command line interface with a few commands
+- Basic line editing with left and right arrows
+- Spinning animation at top right to show timer interrupt working
+- Directory and module structure changed (better organising)
+- Detailed startup messages replaced with O.S. name and version
 
 Building
 --------
