@@ -3,6 +3,7 @@
 # include <screen.h>
 # include <memory.h>
 # include <common.h>
+# include <ports.h>
 
   u8int cursor_x=0, cursor_y=0;            // Row and column of hardware cursor
   u8int *text_video= (u8int *) 0x0B8000;   // VGA text mode memory

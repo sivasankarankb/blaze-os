@@ -4,18 +4,9 @@
 # include <ports.h>
 # include <ps2.h>
 # include <interrupts.h>
- 
-// Prototype of main function
- void main();
 
 // Kernel Main
  void kmain()
- {
-   // Call actual main
-   main();
- }
-
- void main()
  {
    u32int *bsect=(u32int *) 0x07DFC;
    
@@ -48,7 +39,7 @@
    // Start initial services
    
    enable_a20();                    // Enable the A20 line if not enabled yet
-   init_keyboard();                 // Initialize the keyboard
+   //init_keyboard();                 // Initialize the keyboard
    setup_ints();                    // Set Up Interrupts and IRQs
    
    textcolor(0x0F);

@@ -67,10 +67,10 @@ reset_drive:
         mov ax, 0h              ; Offset of Destination address = 0000 
         mov es, ax              ; Move offset to es
                                 ; The reset command uses es:bx
-        mov bx, 7E00h           ; Destination address = 0000:7E00
+        mov bx, 8000h           ; Destination address = 0000:8000
 
         mov ah, 02h             ; READ SECTOR-command
-        mov al, 1h             ; Number of sectors to read = 26
+        mov al, 49              ; Number of sectors to read
         mov ch, 00h             ; Cylinder = 0
         mov cl, 02h             ; Sector = 2 (starts from 1 not 0!)
         mov dh, 00h             ; Head = 0
@@ -103,7 +103,7 @@ reset_drive:
    mov ss,ax            ; Move it into ss
    mov esp, 07000h      ; Set stack pointer to 0x7000
 
-   jmp 08h:0x7E00       ; Call ASM Kernel Main
+   jmp 08h:8000h       ; Call ASM Kernel Main
 
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~;
 

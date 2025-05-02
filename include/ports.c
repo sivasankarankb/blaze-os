@@ -1,11 +1,5 @@
 //--- Inspiration Kernel Port Handling Module ---//
 # include <ports.h>
-
-  // out-port-byte
-  inline void outb(u16int port, u8int value)
-  {
-     asm volatile ( "outb %1, %0"  : :  "dN"  (port),  "a"  (value));
-  }
   
   // in-port-byte
   u8int   inb ( u16int  port) 

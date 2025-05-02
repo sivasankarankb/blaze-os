@@ -6,9 +6,15 @@
 
   // Prototypes for ports.c
   
-  inline void outb(u16int port, u8int value);
+  static inline void outb(u16int port, u8int value);
   u8int inb(u16int port);
   u16int inw(u16int port);
   void io_wait();
+
+  // out-port-byte
+  static inline void outb(u16int port, u8int value)
+  {
+     asm volatile ( "outb %1, %0"  : :  "dN"  (port),  "a"  (value));
+  }
 
 # endif

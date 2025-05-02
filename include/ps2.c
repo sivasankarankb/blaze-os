@@ -1,6 +1,7 @@
 //-- Inspiration PS2-related functions Module --// 
 # include <ps2.h>
 # include <interrupts.h>
+# include <ports.h>
   
   // Enable the a20 line if necessary
   void enable_a20()
