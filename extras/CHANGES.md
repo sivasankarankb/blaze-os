@@ -13,6 +13,7 @@
 - Added a basic command-line interpreter with `help`,`cls`,`dir` and `reboot`
   commands.
 - Replaced detailed startup messages with an animated O.S. version display.
+- Hitting Escape no longer reboots the system.
 
 - Setup the Programmable Interval Timer (PIT).
 - PIT interrupts drive a little rotating animation on top right of console.
