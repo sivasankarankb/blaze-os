@@ -11,32 +11,31 @@ back then. The included Linux script has been tested on very modern build
 tools. Copy the scripts to the outermost directory before running.
 
 
-Fixes required to OS v0.1.1 sources
+Fixes required to OS v0.2.1 sources
 -----------------------------------
+
+**Note**: The points below are numbered discontinuously to not reuse issue
+numbers. The missing numbers pointed to issues in past O.S. versions.
 
 To compile the sources on todays tools, a bunch of changes are required.
 
 - \[01\] In `boot.asm` the number of floppy sectors to load is hard-coded
-  as 22. The latest DJGPP image (as of 29 April 2025) requires 29 sectors.
+  as 1. The latest DJGPP image (as of 02 May 2025) requires 36 sectors.
   Find the number of sectors by dividing the size of the kernel image by 512
   and rounding up. Edit the number in `boot.asm` and reassemble it.
-
-- \[02\] All C source files excluding `kernel.c` include no header files.
-  An 'implicit declaration' warning is thrown for each function external
-  to the source file. Just add `#include "proto.h"` to the top of all C source.
 
 - \[03\] (Fix included in build scripts)
 
   Newer builds of the GNU Linker (ld) for DJGPP sadly no longer support ELF
   format. Both COFF and AOUT formats are supported though. Using COFF produces
-  a warning when assembling `idt.asm`. The AOUT format does the trick for now.
+  a warning when assembling `kern32.asm`. The AOUT format does the trick for now.
 
   MinGW and Linux GCCs still support ELF. Their build scripts will continue to
   utilise ELF for NASM output.
 
 - \[04\] (Fix included in build scripts)
 
-  The `idt.asm` file contains C symbols with an underscore in front. GCC on
+  The `kern32.asm` file contains C symbols with an underscore in front. GCC on
   a linux distro usually produces symbols without a leading underscore.
   The flag `-fleading-underscore` has been added to the build scripts for
   all GCC invocations to add the underscore. It is unlikely that this flag
@@ -45,13 +44,8 @@ To compile the sources on todays tools, a bunch of changes are required.
 - \[05\] The symbol `main` has a special meaning in C and it maybe renamed
   by compilers. MinGW was observed doing this. To build on such compilers
   the `main()` function in `kernel.c` should be renamed to something like
-  `fakemain` or `mymain` for example. All references to `main` in `idt.asm`
+  `fakemain` or `mymain` for example. All references to `main` in `kern32.asm`
   should also be renamed.
-
-- \[06\] In `ports.c` `io_wait()` is defined `static inline` which does not
-  include the function's instructions in the built object file. Move
-  the definition from `ports.c` to `proto.h`. Place it below the `io_wait()`
-  declaration there.
 
 - \[07\] (Fix included in Linux build script)
 
@@ -71,12 +65,22 @@ To compile the sources on todays tools, a bunch of changes are required.
   This was never implemented in the original kernel code. This feature is
   disabled with the `-fno-stack-protector` flag.
 
-- \[10\] The integers `scrl`, `capl` and `numl` are defined in `ps2.c` and
-  referenced in `irq.c`. Add `extern int scrl, capl, numl;` to the top of
-  `irq.c` to let the compiler find them.
+- \[13\] The bootsector loaded the original kernel binary to hex `7E00`. Since
+  our linker script aligns sections to 4K, the address must be changed to hex
+  `8000` in `boot.asm` and `linker.ld`.
 
-- \[11\] Comment out the `setup_paging()` function in `memmgr.c` which does not
-  explicitly cast a pointer. Since this func is unused, this will be enough.
+- \[14\] (Fix included in build scripts)
 
-- \[12\] Remove the last `__asm__` statement in `kernel.c`. That interrupt call
-  will hang.
+  There are multiple header files in the `include` dir that are required by
+  the source code. The `-I include/` option to `gcc` invocations sets this up.
+
+- \[15\] The function `outb` in `ports.c` is declared `inline`. To make this
+  work as required, it must be moved to `ports.h` and both the declaration and
+  definition must be marked `static inline`.
+
+- \[16\] Port I/O is used by `ps2.c` and `screen.c` but `ports.h` was not
+  included by them. Add the include statement to these.
+
+- \[17\] The `init_keyboard` function leaves the keyboard configured in a buggy
+  state. Comment out the call to this function in `kernel.c` to make keyboard
+  input work.

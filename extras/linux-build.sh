@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# GNU/Linux GCC Build Script for Blaze OS v0.1.1
+# GNU/Linux GCC Build Script for Blaze OS v0.2.1
 
-CFLAGS="-c -nostdinc -nostdlib -ffreestanding -march=i386 -fleading-underscore \
--fno-pie -fno-stack-protector -m32"
-CFILES="kernel irq isr itext memmgr pic ports ps2 power"
+CFLAGS="-c -I include/ -nostdinc -nostdlib -ffreestanding -march=i386 \
+-fleading-underscore -fno-pie -fno-stack-protector -m32"
+CFILES="kernel include/interrupts include/screen include/memory include/ports include/ps2"
 CFILECOUNT=$(echo "$CFILES" | wc -w)
 SRCCOUNT=$(($CFILECOUNT + 1))
 
@@ -17,8 +17,10 @@ echo "2 of 6 Build kernel sources"
 SRCNUM=1
 
 mkdir obj
-echo "  $SRCNUM of $SRCCOUNT idt.asm"
-nasm -f elf -o obj/idt.o idt.asm
+mkdir obj/include
+
+echo "  $SRCNUM of $SRCCOUNT kern32.asm"
+nasm -f elf -o obj/kern32.o kern32.asm
 
 for CSOURCE in ${CFILES}; do
   SRCNUM=$(($SRCNUM + 1))
@@ -32,7 +34,7 @@ for CSOURCE in ${CFILES}; do
 
 echo "4 of 6 Create kernel binary"
 
-ld -melf_i386 obj/idt.o obj/libk.a -T linker.ld -o obj/ldkern.o
+ld -melf_i386 obj/kern32.o obj/libk.a -T linker.ld -o obj/ldkern.o
 objcopy -R .note -R .comment -S -g -O binary obj/ldkern.o bin/kernel.bin
 
 echo "5 of 6 Create boot disk image"
