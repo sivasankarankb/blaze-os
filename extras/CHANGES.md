@@ -31,6 +31,7 @@
 
 - Added a number output function in the screen driver.
 - Unused and commented out code is present.
+- Mouse data is no longer printed out as keyboard presses.
 
 
 **Version 0.1.0**
